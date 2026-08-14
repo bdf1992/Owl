@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>OWL complete examples</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f4f0e8;
+      --surface: #fffdf8;
+      --ink: #1d2430;
+      --muted: #606b78;
+      --line: #d9d1c4;
+      --accent: #6d42d8;
+      --accent-ink: #ffffff;
+      --shadow: 0 18px 50px rgba(42, 32, 23, .10);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #17181c;
+        --surface: #212329;
+        --ink: #f5f0e8;
+        --muted: #b5b2ad;
+        --line: #393c45;
+        --accent: #a98cff;
+        --accent-ink: #17131f;
+        --shadow: 0 18px 50px rgba(0, 0, 0, .28);
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% 6%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 28rem),
+        var(--bg);
+      color: var(--ink);
+      font-family: ui-rounded, "SF Pro Rounded", system-ui, sans-serif;
+    }
+    main { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 72px 0 56px; }
+    header { max-width: 720px; margin-bottom: 42px; }
+    .eyebrow { color: var(--accent); font-weight: 750; letter-spacing: .12em; text-transform: uppercase; font-size: .76rem; }
+    h1 { margin: 10px 0 14px; font-size: clamp(2.6rem, 7vw, 5.2rem); line-height: .95; letter-spacing: -.055em; }
+    header p { color: var(--muted); font-size: 1.08rem; line-height: 1.65; }
+    .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .example {
+      min-height: 340px;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      box-shadow: var(--shadow);
+    }
+    .number { color: var(--muted); font-variant-numeric: tabular-nums; }
+    h2 { margin: auto 0 10px; font-size: 1.55rem; letter-spacing: -.03em; }
+    .example p { min-height: 72px; color: var(--muted); line-height: 1.55; }
+    .example a {
+      align-self: flex-start;
+      border-radius: 999px;
+      padding: 11px 16px;
+      color: var(--accent-ink);
+      background: var(--accent);
+      font-weight: 750;
+      text-decoration: none;
+    }
+    .example a:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+    footer { margin-top: 30px; color: var(--muted); font-size: .9rem; }
+    @media (max-width: 820px) { .gallery { grid-template-columns: 1fr; } .example { min-height: 250px; } .example p { min-height: 0; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="eyebrow">Draw the Owl · Pattern commons</div>
+      <h1>Three complete little tools.</h1>
+      <p>Each example begins with a familiar request and reaches a real outcome: make something, revise it, keep it, and carry it elsewhere.</p>
+    </header>
+    <section class="gallery" aria-label="Complete examples">
+      <article class="example">
+        <span class="number">01 / TIME</span>
+        <h2>Magic Calendar</h2>
+        <p>Plan normally, then reveal the next lightly scheduled opening for focused work.</p>
+        <a href="magic-calendar/index.html">Open calendar</a>
+      </article>
+      <article class="example">
+        <span class="number">02 / MARK</span>
+        <h2>Sketch App</h2>
+        <p>Draw with a pointer or touch, erase safely, travel through history, and export the page.</p>
+        <a href="sketch-app/index.html">Open sketchbook</a>
+      </article>
+      <article class="example">
+        <span class="number">03 / SYSTEM</span>
+        <h2>UI Design Space</h2>
+        <p>Move through density, shape, type, and color; watch those choices become a coherent system.</p>
+        <a href="ui-design-space/index.html">Open design space</a>
+      </article>
+    </section>
+    <footer>Dependency-free · local-first · view source encouraged</footer>
+  </main>
+</body>
+</html>
