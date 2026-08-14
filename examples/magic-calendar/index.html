@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Magic Calendar</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f3efe7;
+      --surface: #fffdf8;
+      --raised: #ffffff;
+      --ink: #20242d;
+      --muted: #69717f;
+      --line: #dcd5c9;
+      --violet: #7251cc;
+      --violet-soft: #ebe4ff;
+      --violet-ink: #32187a;
+      --mint: #d9f2e5;
+      --mint-ink: #15583a;
+      --amber: #fae9bd;
+      --amber-ink: #684900;
+      --shadow: 0 18px 54px rgba(63, 48, 31, .10);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #18191d;
+        --surface: #22242a;
+        --raised: #292c33;
+        --ink: #f5f0e7;
+        --muted: #b8b4ad;
+        --line: #3d4049;
+        --violet: #ac91ff;
+        --violet-soft: #382e55;
+        --violet-ink: #eee8ff;
+        --mint: #233f34;
+        --mint-ink: #baf2d5;
+        --amber: #4b4024;
+        --amber-ink: #f9dda0;
+        --shadow: 0 18px 54px rgba(0, 0, 0, .28);
+      }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+    button, input, select { font: inherit; }
+    button, input, select { color: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--violet); outline-offset: 2px; }
+    .app { width: min(1280px, calc(100% - 28px)); margin: 0 auto; padding: 26px 0 44px; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 18px; }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-mark { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 14px; background: var(--violet); color: white; font-size: 1.2rem; }
+    h1 { margin: 0; font-size: 1.12rem; letter-spacing: -.02em; }
+    .brand small { color: var(--muted); }
+    .back { color: var(--muted); text-decoration: none; font-size: .9rem; }
+    .back:hover { color: var(--ink); }
+    .layout { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 18px; align-items: start; }
+    .panel { border: 1px solid var(--line); border-radius: 24px; background: var(--surface); box-shadow: var(--shadow); }
+    .calendar-panel { padding: 20px; }
+    .calendar-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+    .calendar-head h2 { min-width: 200px; margin: 0; text-align: center; font-size: clamp(1.25rem, 3vw, 1.65rem); }
+    .nav { display: flex; gap: 8px; }
+    .icon-button, .quiet-button, .primary-button, .magic-button {
+      border: 1px solid var(--line); border-radius: 12px; background: var(--raised); padding: 9px 12px; font-weight: 700;
+    }
+    .icon-button { min-width: 42px; }
+    .primary-button { border-color: var(--violet); background: var(--violet); color: white; }
+    .magic-button { width: 100%; border-color: transparent; background: var(--violet-soft); color: var(--violet-ink); padding: 12px 14px; }
+    .weekday-row, .calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+    .weekday-row span { padding: 6px; color: var(--muted); text-align: center; font-size: .76rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
+    .calendar-grid { overflow: hidden; border: 1px solid var(--line); border-radius: 16px; background: var(--line); gap: 1px; }
+    .day {
+      position: relative; min-height: 112px; border: 0; border-radius: 0; padding: 10px; background: var(--surface); text-align: left; vertical-align: top;
+    }
+    .day:hover { background: color-mix(in srgb, var(--surface) 86%, var(--violet-soft)); }
+    .day.outside { color: var(--muted); opacity: .55; }
+    .day.selected { z-index: 1; box-shadow: inset 0 0 0 3px var(--violet); }
+    .day.today .date-number { background: var(--ink); color: var(--surface); }
+    .date-number { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 999px; font-size: .82rem; font-weight: 800; }
+    .event-chip { display: block; overflow: hidden; margin-top: 6px; padding: 4px 6px; border-radius: 7px; color: var(--mint-ink); background: var(--mint); font-size: .72rem; text-overflow: ellipsis; white-space: nowrap; }
+    .event-chip.personal { color: var(--amber-ink); background: var(--amber); }
+    .event-chip.focus { color: var(--violet-ink); background: var(--violet-soft); }
+    .more { display: block; margin-top: 5px; color: var(--muted); font-size: .7rem; }
+    .side { display: grid; gap: 18px; }
+    .side .panel { padding: 18px; box-shadow: none; }
+    .side h2 { margin: 0 0 5px; font-size: 1.05rem; }
+    .date-label, .hint { color: var(--muted); font-size: .86rem; line-height: 1.5; }
+    .agenda { display: grid; gap: 8px; margin: 16px 0; }
+    .agenda-empty { padding: 14px; border: 1px dashed var(--line); border-radius: 12px; color: var(--muted); font-size: .86rem; }
+    .agenda-item { display: grid; grid-template-columns: 48px 1fr auto; gap: 8px; align-items: center; padding: 10px; border-radius: 12px; background: var(--raised); }
+    .agenda-time { color: var(--muted); font-size: .78rem; }
+    .agenda-title { overflow: hidden; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+    .remove { border: 0; background: transparent; color: var(--muted); font-size: 1.1rem; }
+    form { display: grid; gap: 10px; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--line); }
+    label { display: grid; gap: 5px; color: var(--muted); font-size: .78rem; font-weight: 750; }
+    input, select { width: 100%; border: 1px solid var(--line); border-radius: 10px; background: var(--raised); padding: 10px 11px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1.4fr; gap: 8px; }
+    .suggestion { display: none; margin: 12px 0; padding: 12px; border-radius: 12px; background: var(--violet-soft); color: var(--violet-ink); line-height: 1.45; }
+    .suggestion.visible { display: block; }
+    .suggestion strong { display: block; margin-bottom: 2px; }
+    .suggestion-actions { display: flex; gap: 8px; margin-top: 10px; }
+    .suggestion-actions button { border: 1px solid currentColor; border-radius: 9px; padding: 7px 9px; background: transparent; color: inherit; font-weight: 700; }
+    .footer-actions { display: flex; justify-content: space-between; gap: 8px; margin-top: 14px; }
+    .status { min-height: 1.2em; margin-top: 10px; color: var(--muted); font-size: .76rem; }
+    @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } .side { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 660px) {
+      .app { width: min(100% - 18px, 1280px); padding-top: 14px; }
+      .topbar { align-items: flex-start; }
+      .calendar-panel { padding: 10px; }
+      .calendar-head { flex-wrap: wrap; }
+      .calendar-head h2 { order: -1; width: 100%; }
+      .day { min-height: 76px; padding: 6px; }
+      .event-chip { width: 8px; height: 8px; padding: 0; border-radius: 999px; font-size: 0; }
+      .more { font-size: 0; }
+      .more::after { content: "+"; font-size: .7rem; }
+      .side { grid-template-columns: 1fr; }
+      .weekday-row span { font-size: .65rem; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">✦</div>
+        <div><h1>Magic Calendar</h1><small>Make room for what matters.</small></div>
+      </div>
+      <a class="back" href="../index.html">All examples</a>
+    </header>
+
+    <div class="layout">
+      <section class="panel calendar-panel" aria-label="Calendar">
+        <div class="calendar-head">
+          <div class="nav">
+            <button class="icon-button" id="previousMonth" type="button" aria-label="Previous month">←</button>
+            <button class="quiet-button" id="todayButton" type="button">Today</button>
+          </div>
+          <h2 id="monthLabel"></h2>
+          <button class="icon-button" id="nextMonth" type="button" aria-label="Next month">→</button>
+        </div>
+        <div class="weekday-row" aria-hidden="true">
+          <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+        </div>
+        <div class="calendar-grid" id="calendarGrid" role="grid" aria-labelledby="monthLabel"></div>
+      </section>
+
+      <aside class="side" aria-label="Selected date details">
+        <section class="panel">
+          <h2 id="selectedHeading">Selected day</h2>
+          <div class="date-label" id="selectedDate"></div>
+          <div class="agenda" id="agenda"></div>
+          <form id="eventForm">
+            <label>Event name<input id="eventTitle" name="title" required maxlength="60" autocomplete="off" placeholder="Design review"></label>
+            <div class="form-row">
+              <label>Time<input id="eventTime" name="time" type="time" value="09:00" required></label>
+              <label>Kind<select id="eventKind" name="kind"><option value="work">Work</option><option value="personal">Personal</option><option value="focus">Focus</option></select></label>
+            </div>
+            <button class="primary-button" type="submit">Add event</button>
+          </form>
+        </section>
+
+        <section class="panel">
+          <h2>Reveal an opening</h2>
+          <p class="hint">Magic here is practical: find the next weekday with enough space for ninety minutes of focused work.</p>
+          <button class="magic-button" id="revealButton" type="button">✦ Reveal next opening</button>
+          <div class="suggestion" id="suggestion" role="status"></div>
+          <div class="footer-actions">
+            <button class="quiet-button" id="exportButton" type="button">Export JSON</button>
+            <button class="quiet-button" id="resetButton" type="button">Reset</button>
+          </div>
+          <div class="status" id="status" role="status" aria-live="polite"></div>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const STORAGE_KEY = "owl-magic-calendar-v1";
+      const monthLabel = document.getElementById("monthLabel");
+      const calendarGrid = document.getElementById("calendarGrid");
+      const selectedDate = document.getElementById("selectedDate");
+      const selectedHeading = document.getElementById("selectedHeading");
+      const agenda = document.getElementById("agenda");
+      const eventForm = document.getElementById("eventForm");
+      const eventTitle = document.getElementById("eventTitle");
+      const suggestion = document.getElementById("suggestion");
+      const status = document.getElementById("status");
+
+      const now = new Date();
+      now.setHours(12, 0, 0, 0);
+      const makeId = () => globalThis.crypto?.randomUUID?.() || `event-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+
+      const iso = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      };
+
+      const dateFromIso = (value) => {
+        const [year, month, day] = value.split("-").map(Number);
+        return new Date(year, month - 1, day, 12);
+      };
+
+      const addDays = (date, amount) => {
+        const next = new Date(date);
+        next.setDate(next.getDate() + amount);
+        return next;
+      };
+
+      const makeSeedEvents = () => [
+        { id: makeId(), date: iso(now), time: "10:00", title: "Shape the week", kind: "work" },
+        { id: makeId(), date: iso(addDays(now, 1)), time: "12:30", title: "Lunch outside", kind: "personal" },
+        { id: makeId(), date: iso(addDays(now, 2)), time: "09:30", title: "Quiet making", kind: "focus" }
+      ];
+
+      let state = {
+        cursor: new Date(now.getFullYear(), now.getMonth(), 1, 12),
+        selected: iso(now),
+        events: makeSeedEvents(),
+        proposed: null
+      };
+
+      const load = () => {
+        try {
+          const stored = JSON.parse(localStorage.getItem(STORAGE_KEY));
+          if (!stored || !Array.isArray(stored.events) || typeof stored.selected !== "string") return;
+          state.events = stored.events;
+          state.selected = stored.selected;
+          const savedDate = dateFromIso(stored.cursor || stored.selected);
+          state.cursor = new Date(savedDate.getFullYear(), savedDate.getMonth(), 1, 12);
+        } catch (error) {
+          status.textContent = "Local save is unavailable; this visit will still work.";
+        }
+      };
+
+      const save = (message = "Saved locally") => {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            cursor: iso(state.cursor), selected: state.selected, events: state.events
+          }));
+          status.textContent = message;
+        } catch (error) {
+          status.textContent = "Could not save locally. Export JSON to keep this calendar.";
+        }
+      };
+
+      const eventsFor = (date) => state.events
+        .filter((event) => event.date === date)
+        .sort((left, right) => left.time.localeCompare(right.time));
+
+      const renderCalendar = () => {
+        const year = state.cursor.getFullYear();
+        const month = state.cursor.getMonth();
+        monthLabel.textContent = state.cursor.toLocaleDateString(undefined, { month: "long", year: "numeric" });
+        calendarGrid.replaceChildren();
+
+        const first = new Date(year, month, 1, 12);
+        const mondayOffset = (first.getDay() + 6) % 7;
+        const gridStart = addDays(first, -mondayOffset);
+
+        for (let index = 0; index < 42; index += 1) {
+          const date = addDays(gridStart, index);
+          const dateIso = iso(date);
+          const dayEvents = eventsFor(dateIso);
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "day";
+          button.setAttribute("role", "gridcell");
+          button.setAttribute("aria-label", `${date.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })}, ${dayEvents.length} events`);
+          if (date.getMonth() !== month) button.classList.add("outside");
+          if (dateIso === state.selected) button.classList.add("selected");
+          if (dateIso === iso(now)) button.classList.add("today");
+          button.innerHTML = `<span class="date-number">${date.getDate()}</span>`;
+
+          dayEvents.slice(0, 2).forEach((event) => {
+            const chip = document.createElement("span");
+            chip.className = `event-chip ${event.kind}`;
+            chip.textContent = `${event.time} ${event.title}`;
+            button.appendChild(chip);
+          });
+          if (dayEvents.length > 2) {
+            const more = document.createElement("span");
+            more.className = "more";
+            more.textContent = `+${dayEvents.length - 2} more`;
+            button.appendChild(more);
+          }
+          button.addEventListener("click", () => selectDate(date));
+          calendarGrid.appendChild(button);
+        }
+      };
+
+      const renderAgenda = () => {
+        const date = dateFromIso(state.selected);
+        selectedHeading.textContent = date.toLocaleDateString(undefined, { weekday: "long" });
+        selectedDate.textContent = date.toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" });
+        agenda.replaceChildren();
+        const dayEvents = eventsFor(state.selected);
+        if (!dayEvents.length) {
+          const empty = document.createElement("div");
+          empty.className = "agenda-empty";
+          empty.textContent = "Nothing planned. The day still has edges.";
+          agenda.appendChild(empty);
+          return;
+        }
+        dayEvents.forEach((event) => {
+          const item = document.createElement("div");
+          item.className = "agenda-item";
+          const time = document.createElement("span");
+          time.className = "agenda-time";
+          time.textContent = event.time;
+          const title = document.createElement("span");
+          title.className = "agenda-title";
+          title.textContent = event.title;
+          const remove = document.createElement("button");
+          remove.type = "button";
+          remove.className = "remove";
+          remove.setAttribute("aria-label", `Remove ${event.title}`);
+          remove.textContent = "×";
+          remove.addEventListener("click", () => {
+            state.events = state.events.filter((candidate) => candidate.id !== event.id);
+            save("Event removed");
+            render();
+          });
+          item.append(time, title, remove);
+          agenda.appendChild(item);
+        });
+      };
+
+      const renderSuggestion = () => {
+        suggestion.classList.toggle("visible", Boolean(state.proposed));
+        suggestion.replaceChildren();
+        if (!state.proposed) return;
+        const date = dateFromIso(state.proposed.date);
+        const copy = document.createElement("div");
+        copy.innerHTML = `<strong>${date.toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" })} at ${state.proposed.time}</strong>Fewer than two events are currently scheduled.`;
+        const actions = document.createElement("div");
+        actions.className = "suggestion-actions";
+        const keep = document.createElement("button");
+        keep.type = "button";
+        keep.textContent = "Reserve it";
+        keep.addEventListener("click", reserveProposal);
+        const dismiss = document.createElement("button");
+        dismiss.type = "button";
+        dismiss.textContent = "Not now";
+        dismiss.addEventListener("click", () => { state.proposed = null; renderSuggestion(); });
+        actions.append(keep, dismiss);
+        suggestion.append(copy, actions);
+      };
+
+      const render = () => {
+        renderCalendar();
+        renderAgenda();
+        renderSuggestion();
+      };
+
+      const selectDate = (date) => {
+        state.selected = iso(date);
+        state.cursor = new Date(date.getFullYear(), date.getMonth(), 1, 12);
+        state.proposed = null;
+        save("Date selected");
+        render();
+      };
+
+      const revealOpening = () => {
+        for (let offset = 1; offset <= 21; offset += 1) {
+          const candidate = addDays(now, offset);
+          const weekday = candidate.getDay();
+          if (weekday === 0 || weekday === 6) continue;
+          if (eventsFor(iso(candidate)).length < 2) {
+            state.proposed = { date: iso(candidate), time: "13:30" };
+            renderSuggestion();
+            return;
+          }
+        }
+        status.textContent = "No light weekday appeared in the next three weeks.";
+      };
+
+      const reserveProposal = () => {
+        if (!state.proposed) return;
+        state.events.push({
+          id: makeId(), date: state.proposed.date, time: state.proposed.time,
+          title: "Protected focus", kind: "focus"
+        });
+        const date = dateFromIso(state.proposed.date);
+        state.selected = state.proposed.date;
+        state.cursor = new Date(date.getFullYear(), date.getMonth(), 1, 12);
+        state.proposed = null;
+        save("Focus opening reserved");
+        render();
+      };
+
+      eventForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const data = new FormData(eventForm);
+        const title = String(data.get("title") || "").trim();
+        if (!title) return;
+        state.events.push({
+          id: makeId(), date: state.selected, time: String(data.get("time")),
+          title, kind: String(data.get("kind"))
+        });
+        eventTitle.value = "";
+        save("Event added");
+        render();
+        eventTitle.focus();
+      });
+
+      document.getElementById("previousMonth").addEventListener("click", () => {
+        state.cursor = new Date(state.cursor.getFullYear(), state.cursor.getMonth() - 1, 1, 12);
+        renderCalendar(); save("Month changed");
+      });
+      document.getElementById("nextMonth").addEventListener("click", () => {
+        state.cursor = new Date(state.cursor.getFullYear(), state.cursor.getMonth() + 1, 1, 12);
+        renderCalendar(); save("Month changed");
+      });
+      document.getElementById("todayButton").addEventListener("click", () => selectDate(now));
+      document.getElementById("revealButton").addEventListener("click", revealOpening);
+      document.getElementById("exportButton").addEventListener("click", () => {
+        const blob = new Blob([JSON.stringify({ format: "owl.magic-calendar/v1", events: state.events }, null, 2)], { type: "application/json" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "magic-calendar.json";
+        link.click();
+        URL.revokeObjectURL(link.href);
+        status.textContent = "Calendar exported";
+      });
+      document.getElementById("resetButton").addEventListener("click", () => {
+        if (!confirm("Reset the calendar to its example events?")) return;
+        state = { cursor: new Date(now.getFullYear(), now.getMonth(), 1, 12), selected: iso(now), events: makeSeedEvents(), proposed: null };
+        save("Calendar reset");
+        render();
+      });
+
+      load();
+      render();
+      status.textContent ||= "Saved locally";
+    })();
+  </script>
+</body>
+</html>

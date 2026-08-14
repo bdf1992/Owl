@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>UI Design Space</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --shell: #12151a;
+      --shell-raised: #1c2027;
+      --shell-line: #343a45;
+      --shell-ink: #f2f4f7;
+      --shell-muted: #a7aeb9;
+      --focus: #cabdff;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: var(--shell); color: var(--shell-ink); font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+    .app { min-height: 100vh; display: grid; grid-template-columns: 330px minmax(0, 1fr); }
+    .controls { padding: 22px; border-right: 1px solid var(--shell-line); background: var(--shell-raised); }
+    .controls header { margin-bottom: 22px; }
+    .eyebrow { color: var(--shell-muted); font-size: .72rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    h1 { margin: 6px 0 7px; font-size: 1.45rem; letter-spacing: -.035em; }
+    .intro { margin: 0; color: var(--shell-muted); font-size: .84rem; line-height: 1.5; }
+    .control-list { display: grid; gap: 17px; }
+    .control label, .select-label { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 7px; color: var(--shell-muted); font-size: .78rem; font-weight: 700; }
+    .control output { color: var(--shell-ink); font-variant-numeric: tabular-nums; }
+    input[type="range"] { width: 100%; accent-color: var(--focus); }
+    input[type="color"] { width: 100%; height: 38px; border: 1px solid var(--shell-line); border-radius: 9px; padding: 3px; background: var(--shell); }
+    select { width: 100%; border: 1px solid var(--shell-line); border-radius: 9px; padding: 9px 10px; background: var(--shell); color: var(--shell-ink); }
+    .map-wrap { margin-top: 20px; }
+    .map-wrap h2, .presets h2, .policies h2 { margin: 0 0 9px; font-size: .78rem; color: var(--shell-muted); letter-spacing: .07em; text-transform: uppercase; }
+    .space-map { display: block; width: 100%; border: 1px solid var(--shell-line); border-radius: 12px; background: var(--shell); }
+    .space-map text { fill: var(--shell-muted); font-size: 9px; }
+    .space-map .axis { stroke: var(--shell-line); stroke-width: 1; }
+    .space-map .point { fill: var(--focus); stroke: var(--shell); stroke-width: 3; }
+    .presets { margin-top: 20px; }
+    .preset-row { display: flex; flex-wrap: wrap; gap: 6px; }
+    .preset { border: 1px solid var(--shell-line); border-radius: 999px; padding: 7px 9px; background: transparent; color: var(--shell-ink); font-size: .72rem; }
+    .preset:hover { background: var(--shell); }
+    .policies { margin-top: 20px; padding-top: 17px; border-top: 1px solid var(--shell-line); }
+    .policies ul { margin: 0; padding-left: 18px; color: var(--shell-muted); font-size: .76rem; line-height: 1.6; }
+    .shell-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 20px; }
+    .shell-actions button { border: 1px solid var(--shell-line); border-radius: 9px; padding: 9px; background: var(--shell); color: var(--shell-ink); font-size: .75rem; font-weight: 750; }
+    .status { min-height: 1.2em; margin-top: 9px; color: var(--shell-muted); font-size: .7rem; }
+    .back { display: inline-block; margin-top: 14px; color: var(--shell-muted); font-size: .75rem; }
+    .workspace { min-width: 0; padding: clamp(16px, 4vw, 50px); background: #dfe3e9; }
+    .preview {
+      --ds-accent: #5f4dd8;
+      --ds-accent-ink: #ffffff;
+      --ds-bg: #f6f7f9;
+      --ds-surface: #ffffff;
+      --ds-ink: #1e2430;
+      --ds-muted: #667080;
+      --ds-line: #d8dde5;
+      --ds-radius: 14px;
+      --ds-space: 16px;
+      --ds-scale: 1;
+      overflow: hidden; max-width: 1040px; margin: 0 auto; border: 1px solid var(--ds-line); border-radius: calc(var(--ds-radius) + 8px);
+      background: var(--ds-bg); color: var(--ds-ink); font-size: calc(16px * var(--ds-scale)); box-shadow: 0 30px 80px rgba(24, 29, 38, .18);
+    }
+    .preview * { box-sizing: border-box; }
+    .preview button, .preview input { font: inherit; }
+    .preview-header { display: flex; align-items: center; justify-content: space-between; gap: var(--ds-space); padding: var(--ds-space) calc(var(--ds-space) * 1.25); border-bottom: 1px solid var(--ds-line); background: var(--ds-surface); }
+    .preview-brand { font-weight: 800; letter-spacing: -.03em; }
+    .preview-nav { display: flex; gap: calc(var(--ds-space) * .4); color: var(--ds-muted); font-size: .8em; }
+    .preview-nav span { padding: calc(var(--ds-space) * .35) calc(var(--ds-space) * .55); }
+    .preview-nav .active { border-radius: calc(var(--ds-radius) * .6); background: color-mix(in srgb, var(--ds-accent) 12%, transparent); color: var(--ds-accent); font-weight: 750; }
+    .avatar { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; background: var(--ds-accent); color: var(--ds-accent-ink); font-size: .75em; font-weight: 800; }
+    .preview-main { padding: calc(var(--ds-space) * 1.5); }
+    .preview-title-row { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--ds-space); margin-bottom: calc(var(--ds-space) * 1.25); }
+    .preview-title-row h2 { margin: 0 0 5px; font-size: 1.65em; letter-spacing: -.045em; }
+    .preview-title-row p { margin: 0; color: var(--ds-muted); font-size: .84em; }
+    .primary { border: 1px solid var(--ds-accent); border-radius: calc(var(--ds-radius) * .72); padding: calc(var(--ds-space) * .62) calc(var(--ds-space) * .9); background: var(--ds-accent); color: var(--ds-accent-ink); font-weight: 750; }
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--ds-space); }
+    .card { padding: var(--ds-space); border: 1px solid var(--ds-line); border-radius: var(--ds-radius); background: var(--ds-surface); }
+    .metric-label { color: var(--ds-muted); font-size: .76em; }
+    .metric { margin-top: calc(var(--ds-space) * .38); font-size: 1.5em; font-weight: 800; letter-spacing: -.045em; }
+    .delta { margin-top: calc(var(--ds-space) * .25); color: var(--ds-accent); font-size: .72em; font-weight: 700; }
+    .content-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(220px, .8fr); gap: var(--ds-space); margin-top: var(--ds-space); }
+    .activity h3, .form-card h3 { margin: 0 0 var(--ds-space); font-size: .95em; }
+    .activity-row { display: grid; grid-template-columns: 10px 1fr auto; gap: calc(var(--ds-space) * .65); align-items: center; padding: calc(var(--ds-space) * .75) 0; border-top: 1px solid var(--ds-line); font-size: .78em; }
+    .activity-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ds-accent); }
+    .activity-row span:last-child { color: var(--ds-muted); }
+    .form-card label { display: grid; gap: calc(var(--ds-space) * .35); margin-bottom: calc(var(--ds-space) * .65); color: var(--ds-muted); font-size: .72em; font-weight: 700; }
+    .form-card input { width: 100%; border: 1px solid var(--ds-line); border-radius: calc(var(--ds-radius) * .62); padding: calc(var(--ds-space) * .58); background: var(--ds-bg); color: var(--ds-ink); }
+    .form-card .primary { width: 100%; }
+    .token-strip { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; margin-top: var(--ds-space); overflow: hidden; border: 1px solid var(--ds-line); border-radius: var(--ds-radius); background: var(--ds-line); }
+    .token { min-width: 0; padding: calc(var(--ds-space) * .72); background: var(--ds-surface); }
+    .token span { display: block; overflow: hidden; color: var(--ds-muted); font-size: .62em; text-overflow: ellipsis; white-space: nowrap; }
+    .token strong { display: block; overflow: hidden; margin-top: 4px; font-size: .68em; text-overflow: ellipsis; white-space: nowrap; }
+    .code-sheet { display: none; max-width: 1040px; margin: 16px auto 0; padding: 16px; overflow: auto; border: 1px solid #343a45; border-radius: 12px; background: #12151a; color: #dce3ed; font: 12px/1.6 ui-monospace, monospace; white-space: pre; }
+    .code-sheet.visible { display: block; }
+    @media (max-width: 900px) { .app { grid-template-columns: 280px minmax(0, 1fr); } .cards { grid-template-columns: 1fr 1fr; } .cards .card:last-child { grid-column: 1 / -1; } .content-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 700px) {
+      .app { display: block; }
+      .controls { border-right: 0; border-bottom: 1px solid var(--shell-line); }
+      .control-list { grid-template-columns: 1fr 1fr; }
+      .map-wrap, .policies { display: none; }
+      .preview-header { flex-wrap: wrap; }
+      .preview-nav { order: 3; width: 100%; }
+      .preview-title-row { align-items: flex-start; flex-direction: column; }
+      .cards { grid-template-columns: 1fr; }
+      .cards .card:last-child { grid-column: auto; }
+      .token-strip { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 430px) { .control-list { grid-template-columns: 1fr; } .preview-main { padding: var(--ds-space); } .workspace { padding: 10px; } }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <aside class="controls" aria-label="Design space controls">
+      <header>
+        <div class="eyebrow">System foundry</div>
+        <h1>UI Design Space</h1>
+        <p class="intro">Choose positions in a bounded space. The system turns them into tokens, component geometry, and explicit policy.</p>
+      </header>
+
+      <div class="control-list">
+        <div class="control">
+          <label for="density">Density <output id="densityValue">Balanced</output></label>
+          <input id="density" type="range" min="10" max="22" value="16" step="1">
+        </div>
+        <div class="control">
+          <label for="roundness">Roundness <output id="roundnessValue">14px</output></label>
+          <input id="roundness" type="range" min="0" max="28" value="14" step="1">
+        </div>
+        <div class="control">
+          <label for="typeScale">Type scale <output id="typeScaleValue">1.00×</output></label>
+          <input id="typeScale" type="range" min="88" max="116" value="100" step="1">
+        </div>
+        <div class="control">
+          <label for="accent">Accent <output id="accentValue">#5f4dd8</output></label>
+          <input id="accent" type="color" value="#5f4dd8">
+        </div>
+        <div class="control">
+          <label class="select-label" for="contrast">Contrast</label>
+          <select id="contrast"><option value="soft">Soft</option><option value="balanced" selected>Balanced</option><option value="strong">Strong</option></select>
+        </div>
+      </div>
+
+      <section class="map-wrap" aria-label="Position in design space">
+        <h2>Current position</h2>
+        <svg class="space-map" viewBox="0 0 260 130" role="img" aria-labelledby="mapTitle mapDescription">
+          <title id="mapTitle">Density and roundness map</title>
+          <desc id="mapDescription">The point moves horizontally from compact to spacious and vertically from square to round.</desc>
+          <line class="axis" x1="24" y1="108" x2="240" y2="108"></line>
+          <line class="axis" x1="24" y1="108" x2="24" y2="18"></line>
+          <line class="axis" x1="132" y1="18" x2="132" y2="108"></line>
+          <line class="axis" x1="24" y1="63" x2="240" y2="63"></line>
+          <text x="24" y="122">compact</text><text x="207" y="122">spacious</text>
+          <text x="28" y="29">round</text><text x="28" y="102">square</text>
+          <circle class="point" id="spacePoint" cx="132" cy="63" r="7"></circle>
+        </svg>
+      </section>
+
+      <section class="presets">
+        <h2>Reference positions</h2>
+        <div class="preset-row">
+          <button class="preset" type="button" data-preset="operational">Operational</button>
+          <button class="preset" type="button" data-preset="friendly">Friendly</button>
+          <button class="preset" type="button" data-preset="quiet">Quiet studio</button>
+        </div>
+      </section>
+
+      <section class="policies">
+        <h2>Derived policy</h2>
+        <ul id="policyList"></ul>
+      </section>
+
+      <div class="shell-actions">
+        <button id="copyButton" type="button">Copy CSS</button>
+        <button id="exportButton" type="button">Export JSON</button>
+        <button id="codeButton" type="button">Show tokens</button>
+        <button id="resetButton" type="button">Reset</button>
+      </div>
+      <div class="status" id="status" role="status" aria-live="polite">System saved locally.</div>
+      <a class="back" href="../index.html">← All examples</a>
+    </aside>
+
+    <section class="workspace" aria-label="Live component proof">
+      <div class="preview" id="preview">
+        <header class="preview-header">
+          <div class="preview-brand">Northstar</div>
+          <nav class="preview-nav" aria-label="Preview navigation"><span class="active">Overview</span><span>Projects</span><span>Reports</span></nav>
+          <div class="avatar" aria-label="Profile for BD">BD</div>
+        </header>
+        <div class="preview-main">
+          <div class="preview-title-row">
+            <div><h2>Good afternoon.</h2><p>A live proof of the system, not a mood board.</p></div>
+            <button class="primary" type="button">New project</button>
+          </div>
+          <div class="cards">
+            <article class="card"><div class="metric-label">Active projects</div><div class="metric">12</div><div class="delta">+2 this week</div></article>
+            <article class="card"><div class="metric-label">Resolved</div><div class="metric">84%</div><div class="delta">On track</div></article>
+            <article class="card"><div class="metric-label">Next review</div><div class="metric">Thu</div><div class="delta">2:30 PM</div></article>
+          </div>
+          <div class="content-grid">
+            <section class="card activity">
+              <h3>Recent activity</h3>
+              <div class="activity-row"><span class="activity-dot"></span><strong>Prototype accepted</strong><span>12m</span></div>
+              <div class="activity-row"><span class="activity-dot"></span><strong>Research notes added</strong><span>2h</span></div>
+              <div class="activity-row"><span class="activity-dot"></span><strong>Release candidate ready</strong><span>Yesterday</span></div>
+            </section>
+            <form class="card form-card" onsubmit="return false">
+              <h3>Create a project</h3>
+              <label>Name<input value="Small complete thing" aria-label="Project name"></label>
+              <label>Owner<input value="Design team" aria-label="Project owner"></label>
+              <button class="primary" type="submit">Create project</button>
+            </form>
+          </div>
+          <div class="token-strip" id="tokenStrip" aria-label="Current token values"></div>
+        </div>
+      </div>
+      <pre class="code-sheet" id="codeSheet" aria-label="Generated CSS tokens"></pre>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const STORAGE_KEY = "owl-ui-design-space-v1";
+      const preview = document.getElementById("preview");
+      const status = document.getElementById("status");
+      const controls = {
+        density: document.getElementById("density"),
+        roundness: document.getElementById("roundness"),
+        typeScale: document.getElementById("typeScale"),
+        accent: document.getElementById("accent"),
+        contrast: document.getElementById("contrast")
+      };
+      const defaults = { density: 16, roundness: 14, typeScale: 100, accent: "#5f4dd8", contrast: "balanced" };
+      const presets = {
+        operational: { density: 11, roundness: 5, typeScale: 94, accent: "#146b72", contrast: "strong" },
+        friendly: { density: 19, roundness: 23, typeScale: 105, accent: "#d14f68", contrast: "balanced" },
+        quiet: { density: 17, roundness: 10, typeScale: 98, accent: "#6d665f", contrast: "soft" }
+      };
+      const contrastTokens = {
+        soft: { bg: "#f4f3f0", surface: "#faf9f6", ink: "#34363a", muted: "#74767b", line: "#e2e0da" },
+        balanced: { bg: "#f6f7f9", surface: "#ffffff", ink: "#1e2430", muted: "#667080", line: "#d8dde5" },
+        strong: { bg: "#eef1f4", surface: "#ffffff", ink: "#101317", muted: "#4e5763", line: "#c3cad3" }
+      };
+
+      const hexToRgb = (hex) => {
+        const value = hex.replace("#", "");
+        return [0, 2, 4].map((offset) => Number.parseInt(value.slice(offset, offset + 2), 16));
+      };
+
+      const readableInk = (hex) => {
+        const [red, green, blue] = hexToRgb(hex).map((channel) => channel / 255);
+        const linear = [red, green, blue].map((channel) => channel <= 0.03928 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4);
+        const luminance = linear[0] * 0.2126 + linear[1] * 0.7152 + linear[2] * 0.0722;
+        return luminance > 0.179 ? "#17191d" : "#ffffff";
+      };
+
+      const values = () => ({
+        density: Number(controls.density.value),
+        roundness: Number(controls.roundness.value),
+        typeScale: Number(controls.typeScale.value),
+        accent: controls.accent.value,
+        contrast: controls.contrast.value
+      });
+
+      const tokens = () => {
+        const current = values();
+        const neutral = contrastTokens[current.contrast];
+        return {
+          "color.accent": current.accent,
+          "color.accent-ink": readableInk(current.accent),
+          "color.background": neutral.bg,
+          "color.surface": neutral.surface,
+          "color.ink": neutral.ink,
+          "color.muted": neutral.muted,
+          "color.line": neutral.line,
+          "radius.control": `${Math.max(3, Math.round(current.roundness * 0.72))}px`,
+          "radius.surface": `${current.roundness}px`,
+          "space.base": `${current.density}px`,
+          "type.scale": (current.typeScale / 100).toFixed(2)
+        };
+      };
+
+      const cssText = () => {
+        const tokenSet = tokens();
+        return `:root {\n${Object.entries(tokenSet).map(([name, value]) => `  --${name.replaceAll(".", "-")}: ${value};`).join("\n")}\n}`;
+      };
+
+      const save = () => {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(values()));
+          status.textContent = "System saved locally.";
+        } catch (error) {
+          status.textContent = "Local save is unavailable; export the tokens to keep them.";
+        }
+      };
+
+      const applyValues = (next) => {
+        Object.entries(next).forEach(([name, value]) => { if (controls[name]) controls[name].value = value; });
+        render();
+      };
+
+      const load = () => {
+        try {
+          const stored = JSON.parse(localStorage.getItem(STORAGE_KEY));
+          if (stored) applyValues({ ...defaults, ...stored });
+        } catch (error) {
+          status.textContent = "Saved tokens could not be restored; defaults are active.";
+        }
+      };
+
+      const render = () => {
+        const current = values();
+        const tokenSet = tokens();
+        preview.style.setProperty("--ds-accent", tokenSet["color.accent"]);
+        preview.style.setProperty("--ds-accent-ink", tokenSet["color.accent-ink"]);
+        preview.style.setProperty("--ds-bg", tokenSet["color.background"]);
+        preview.style.setProperty("--ds-surface", tokenSet["color.surface"]);
+        preview.style.setProperty("--ds-ink", tokenSet["color.ink"]);
+        preview.style.setProperty("--ds-muted", tokenSet["color.muted"]);
+        preview.style.setProperty("--ds-line", tokenSet["color.line"]);
+        preview.style.setProperty("--ds-radius", tokenSet["radius.surface"]);
+        preview.style.setProperty("--ds-space", tokenSet["space.base"]);
+        preview.style.setProperty("--ds-scale", tokenSet["type.scale"]);
+
+        document.getElementById("densityValue").textContent = current.density < 14 ? "Compact" : current.density > 18 ? "Spacious" : "Balanced";
+        document.getElementById("roundnessValue").textContent = `${current.roundness}px`;
+        document.getElementById("typeScaleValue").textContent = `${(current.typeScale / 100).toFixed(2)}×`;
+        document.getElementById("accentValue").textContent = current.accent;
+
+        const point = document.getElementById("spacePoint");
+        point.setAttribute("cx", String(24 + ((current.density - 10) / 12) * 216));
+        point.setAttribute("cy", String(108 - (current.roundness / 28) * 90));
+
+        const policies = [
+          current.density < 14 ? "Prefer single-line controls and compact tables." : current.density > 18 ? "Give touch targets and content groups generous air." : "Balance scanning speed with comfortable targets.",
+          current.roundness < 8 ? "Use crisp geometry; reserve pills for statuses." : current.roundness > 20 ? "Use soft containers; keep data grids comparatively square." : "Use moderate curves consistently across surfaces.",
+          current.contrast === "strong" ? "Favor explicit boundaries and high-contrast labels." : current.contrast === "soft" ? "Rely on spacing first and quiet borders second." : "Use boundaries where they clarify interaction.",
+          "Use the accent for actions and selection, never as decoration alone."
+        ];
+        const policyList = document.getElementById("policyList");
+        policyList.replaceChildren(...policies.map((policy) => {
+          const item = document.createElement("li"); item.textContent = policy; return item;
+        }));
+
+        const tokenStrip = document.getElementById("tokenStrip");
+        const shownTokens = ["color.accent", "color.surface", "radius.surface", "space.base", "type.scale"];
+        tokenStrip.replaceChildren(...shownTokens.map((name) => {
+          const item = document.createElement("div");
+          item.className = "token";
+          const label = document.createElement("span"); label.textContent = name;
+          const value = document.createElement("strong"); value.textContent = tokenSet[name];
+          item.append(label, value); return item;
+        }));
+        document.getElementById("codeSheet").textContent = cssText();
+        save();
+      };
+
+      Object.values(controls).forEach((control) => control.addEventListener("input", render));
+      document.querySelectorAll(".preset").forEach((button) => button.addEventListener("click", () => {
+        applyValues(presets[button.dataset.preset]);
+        status.textContent = `${button.textContent} position applied.`;
+      }));
+      document.getElementById("copyButton").addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(cssText());
+          status.textContent = "CSS tokens copied.";
+        } catch (error) {
+          const sheet = document.getElementById("codeSheet");
+          sheet.classList.add("visible");
+          status.textContent = "Clipboard unavailable; the CSS is visible below the preview.";
+        }
+      });
+      document.getElementById("exportButton").addEventListener("click", () => {
+        const blob = new Blob([JSON.stringify({ format: "owl.design-tokens/v1", position: values(), tokens: tokens() }, null, 2)], { type: "application/json" });
+        const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = "northstar-tokens.json"; link.click(); URL.revokeObjectURL(link.href);
+        status.textContent = "Design tokens exported.";
+      });
+      document.getElementById("codeButton").addEventListener("click", (event) => {
+        const sheet = document.getElementById("codeSheet");
+        const visible = sheet.classList.toggle("visible");
+        event.currentTarget.textContent = visible ? "Hide tokens" : "Show tokens";
+      });
+      document.getElementById("resetButton").addEventListener("click", () => {
+        if (!confirm("Reset the design space to its balanced position?")) return;
+        applyValues(defaults); status.textContent = "Balanced position restored.";
+      });
+
+      load();
+      render();
+    })();
+  </script>
+</body>
+</html>

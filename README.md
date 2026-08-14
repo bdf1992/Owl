@@ -6,6 +6,8 @@ Draw the Owl turns a rough request or exploratory mark into a complete, inspecta
 
 OWL_ENGINE keeps the deterministic work out of the model's prose: target identity, commission, current artifact, marks, evidence, environment observations, sessions, and bounded continuation.
 
+The [complete example gallery](examples/) supplies a small pattern commons: three dependency-free browser tools that make, revise, preserve, and export a real result.
+
 > Draw shapes. Draw parts. Draw features. Draw the rest of the fucking owl—not an Unfinished Horse.
 
 ## What is here
@@ -21,6 +23,10 @@ draw-the-owl/
 │   ├── owl_mcp_server.py    # Local-first MCP entry point
 │   └── demo_*.py            # Executable demonstrations
 └── tests/                   # Acceptance tests
+examples/
+├── magic-calendar/          # Calendar with a useful derived suggestion
+├── sketch-app/              # Drawing, history, persistence, and PNG export
+└── ui-design-space/         # Parameter space compiled into a token system
 ```
 
 The ordinary reasoning surface stays small:
@@ -40,7 +46,7 @@ Requires Python 3.11 or newer. The current implementation uses only the standard
 python3 -m unittest discover -s draw-the-owl/tests -v
 ```
 
-Expected: 22 tests pass.
+Expected: 28 tests pass. The JavaScript syntax check is skipped only when Node is unavailable.
 
 Run the demonstrations:
 
@@ -48,6 +54,14 @@ Run the demonstrations:
 python3 draw-the-owl/scripts/demo_owl_engine.py
 python3 draw-the-owl/scripts/demo_hatchling.py
 ```
+
+Open the complete examples without a build step:
+
+```bash
+python3 -m http.server --directory examples 8000
+```
+
+Then visit `http://localhost:8000`.
 
 ## Scope boundary
 
@@ -58,4 +72,3 @@ The governing engine principle is:
 > Broad tool surface; narrow purpose.
 
 Every capability must help draw the current Target faithfully. Rules are retained only when they remain natural for a human, shared between participants, direct for the model, true to actual work, and faithful to the premise.
-
