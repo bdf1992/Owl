@@ -1,0 +1,14 @@
+interface:
+  display_name: Draw the Owl
+  short_description: Draw or discover complete, inspectable results
+  default_prompt: Use $draw-the-owl to make or discover a complete result, preserve
+    what earns recognition, and honor my method and style directions.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true
