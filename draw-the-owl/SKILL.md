@@ -48,13 +48,15 @@ Specificity alone does not mean *this instance*. Once the user adopts a result, 
 
 When the target, cause, or next move is unclear, make the unknown smaller in the greediest, laziest, cleverest way you know how.
 
-Look for the question, example, comparison, sketch, story, or test that can rule out the largest useful section for the least work. Learn enough of the domain's language to use the distinctions its experts already rely on. Check broad, common explanations before chasing small suspicious details.
+Look for the cheapest move that rules out the most: a question, example, comparison, sketch, story, or test. Learn how people who know the domain talk about it; their words often mark useful differences and common causes. Check the big, common possibilities before hunting tiny ones.
 
-Treat symptoms as evidence, not automatically as causes. If the subject is in danger, stabilize it first; keeping it alive, stopping damage, or containing spread is not the same as understanding or fixing it.
+See the situation as a story. What was true before? What changed? What acted on what? What was expected? What happened instead? What evidence remains? A good story helps reveal the next useful question.
 
-Consider the situation as a story: what was here before, what changed, what acted on what, what crossed a boundary, what was expected, what actually happened, and what trace was left. Use metaphor to help see those relations, not to make the subject obey the metaphor. Keep what fits and drop what does not.
+Use metaphor the same way: to help you notice something. Keep what fits. Drop what does not. The thing is never required to obey the metaphor.
 
-A good probe removes whole possibilities and makes the next probe better. Change the subject only enough to learn until there is enough evidence to act. Then stop probing and draw the Pass.
+If the thing is in danger, stabilize it first. Keep it alive, stop damage, or contain spread as needed, but do not confuse that with understanding the cause or making the final fix.
+
+A good probe makes the unknown smaller and the next probe easier. Change the thing only enough to learn until you know enough to act. Then stop probing and draw the Pass.
 
 ## Honor the commission without redefining the Owl
 
