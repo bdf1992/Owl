@@ -8,6 +8,8 @@ from pathlib import Path
 from threading import Lock
 from typing import Any, Protocol
 
+from .models import Mark
+
 
 @dataclass
 class StateEnvelope:
@@ -16,7 +18,7 @@ class StateEnvelope:
     revision: str | None = None
     current: str | None = None
     keep: list[str] = field(default_factory=list)
-    marks: list[str] = field(default_factory=list)
+    marks: list[dict[str, Any]] = field(default_factory=list)
     residuals: list[str] = field(default_factory=list)
     evidence: list[str] = field(default_factory=list)
     environments: list[dict[str, Any]] = field(default_factory=list)
@@ -27,14 +29,27 @@ class StateEnvelope:
     commission: dict[str, Any] = field(default_factory=dict)
     egg: dict[str, Any] = field(default_factory=dict)
     sessions: dict[str, dict[str, Any]] = field(default_factory=dict)
+    passes_since_commissioner_mark: int = 0
+    last_commissioner_mark: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         data = asdict(self)
+        # A settled target carries no counter. The field appears only while the
+        # drawer is actually ahead of the commissioner, so the file reads as the
+        # outstanding condition rather than as permanent bookkeeping.
+        if not data.get("passes_since_commissioner_mark"):
+            data.pop("passes_since_commissioner_mark", None)
         return {key: value for key, value in data.items() if value not in (None, [], {})}
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "StateEnvelope":
-        return cls(**data)
+        payload = dict(data)
+        # Files written before Marks carried authorship hold bare strings.
+        # Normalize on load so no caller has to know which era a file is from.
+        payload["marks"] = [Mark.coerce(mark).to_dict() for mark in payload.get("marks", [])]
+        if not payload["marks"]:
+            payload.pop("marks")
+        return cls(**payload)
 
 
 class StateConflict(RuntimeError):
