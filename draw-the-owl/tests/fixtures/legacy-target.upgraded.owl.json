@@ -1,0 +1,11 @@
+{
+  "current": "sketch of the legacy target",
+  "revision": "4",
+  "target": {
+    "expected": "one complete Step 1",
+    "identity": "any-instance",
+    "name": "legacy owl",
+    "scope": "a single local workspace"
+  },
+  "target_id": "legacy-target"
+}

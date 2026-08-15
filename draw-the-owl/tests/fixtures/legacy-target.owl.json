@@ -1,0 +1,13 @@
+{
+  "target_id": "legacy-target",
+  "target": {
+    "name": "legacy owl",
+    "identity": "any-instance",
+    "expected": "one complete Step 1",
+    "scope": "a single local workspace"
+  },
+  "current": "sketch of the legacy target",
+  "revision": "4",
+  "vibe_report": "overworked",
+  "signature_block": "Drawn by Codex from Bdo's Marks"
+}

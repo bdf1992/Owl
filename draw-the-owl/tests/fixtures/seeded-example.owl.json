@@ -1,0 +1,10 @@
+{
+  "revision": "1",
+  "target": {
+    "expected": "A fresh OWL_ENGINE target ready for its first Pass.",
+    "identity": "any-instance",
+    "name": "Pattern Commons Example",
+    "scope": "documentation example only; not a real Draw the Owl session"
+  },
+  "target_id": "pattern-commons-example"
+}
