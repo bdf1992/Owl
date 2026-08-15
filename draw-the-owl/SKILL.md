@@ -46,18 +46,36 @@ Specificity alone does not mean *this instance*. Once the user adopts a result, 
 
 ## Let the drawing grow through steps
 
-A **Step** is a meaningful advance in the same drawing, not a conversation turn, tool call, or fixed phase. The common rhythm is **Shapes → Parts → Features → Whole**.
+A **Step** is a meaningful advance in the same drawing, not a conversation turn, tool call, or fixed phase. The rhythm is **Shape informs Parts, Parts inform Features, Features become the Whole**.
 
-- **Shape:** something concrete exists that can be seen, tried, compared, or reacted to.
-- **Part:** a Shape has a known place or role in the named Target. The Shape does not need to be replaced; it becomes a Part by belonging to the larger thing.
-- **Feature:** something the Part has, does, expresses, or makes possible that matters to recognition or use.
-- **Whole:** enough Parts and Features work together that the Target itself can be recognized, used, or judged.
+In collaborative work, a Step is not settled until the commissioner has had a chance to mark it. Never invent their Mark, approval, rejection, or turn. Anything the drawer supplies alone is a proposal until adopted.
 
-Shapes become Parts; Parts hold Features; Parts and Features compose the Whole. Do not make something "part-like" merely because a step is called Parts. Ask what larger Target the existing Shape belongs to and what role it plays there.
+- **Shape:** something concrete that can be seen, tried, compared, or reacted to. It is already the Whole, roughly. *What shapes do we have?*
+- **Part:** a Shape that has taken a known role in the Shape it refines. The Shape is not replaced — the stroke is still the stroke; it is now the head. *What are these Shapes parts of?*
+- **Feature:** something a Part has, does, expresses, or makes possible that matters to recognition or use. *What features belong on these Parts?*
+- **Whole:** enough Parts and Features work together that the Target can be recognized, used, or judged. *What are we now agreeing to draw?*
+
+Each step is read off the one before it, not added to it. Refine the Shape you already have until Parts show up in it; ask what it belongs to rather than supplying the larger thing yourself. Say which Shape is being refined — a tool and the gallery holding it are both Shapes, and they yield different Parts.
+
+Name a Part by its role, never as "a part": say *head*, *wing*, *the surface carrying the result*. A Part named by its substance can stand alone, and a Part that can stand alone is a rival to the Target rather than a piece of it. It must be distinguishable as part of the owl, not as a shape that could be the owl.
+
+New material enters through a Mark, not at a step boundary. A Step that introduces something the previous Step did not inform is the drawer taking the commissioner's authority.
 
 This rhythm is flexible. Several Steps may still be Shapes. A Feature may open into its own Shape → Part → Feature cycle. A Whole at one scale may become a Shape at another. Steps may repeat, combine, or recurse; they exist to show progress, not to make the work obey a counter.
 
-Stop counting structure as soon as enough is known to draw the Whole. A Step that only discusses what a later Step might make is not progress in the drawing.
+Stop counting structure as soon as enough is known to draw the Whole. In collaborative discovery, "enough" means the Shapes, Parts, and Features needed for this Whole are shared or explicitly delegated — not silently supplied by the drawer. A Step that only discusses what a later Step might make is not progress in the drawing.
+
+## Run the same cycle through every phase
+
+The cycle does not change between phases. Only where the Mark comes from does.
+
+- **Design:** step zero. Strategy, configuration, ideation. Bind what the owl is, and separately how the commissioner wants it realized, before any of it is drawn. `OWL_ENGINE` calls this Session Zero.
+- **Draw:** execution, changes, sketches. The core case, and the one the rest of this skill is written for.
+- **Practice:** benchmarks, tests, updates. A shadow draw. The commission is already fixed, so the Marks come from materials, history, and options — a failing test, a slower run, a version that moved.
+
+Practice carries no commissioner because the agreement already exists, not because nobody is there. Read the Mark off the evidence and never invent one to justify a Pass. If Practice surfaces something the existing agreement does not settle, it has stopped being Practice and belongs back in Design.
+
+Phases repeat and re-enter. Do not make anyone declare one. Name a phase only when it changes where a Mark may come from.
 
 ## Make the unknown smaller
 
