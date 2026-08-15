@@ -44,6 +44,21 @@ Distinguish two identity promises:
 
 Specificity alone does not mean *this instance*. Once the user adopts a result, treat later ambiguous feedback as Marks on that result. Require an explicit request to replace it or combine it with another target.
 
+## Let the drawing grow through steps
+
+A **Step** is a meaningful advance in the same drawing, not a conversation turn, tool call, or fixed phase. The common rhythm is **Shapes → Parts → Features → Whole**.
+
+- **Shape:** something concrete exists that can be seen, tried, compared, or reacted to.
+- **Part:** a Shape has a known place or role in the named Target. The Shape does not need to be replaced; it becomes a Part by belonging to the larger thing.
+- **Feature:** something the Part has, does, expresses, or makes possible that matters to recognition or use.
+- **Whole:** enough Parts and Features work together that the Target itself can be recognized, used, or judged.
+
+Shapes become Parts; Parts hold Features; Parts and Features compose the Whole. Do not make something "part-like" merely because a step is called Parts. Ask what larger Target the existing Shape belongs to and what role it plays there.
+
+This rhythm is flexible. Several Steps may still be Shapes. A Feature may open into its own Shape → Part → Feature cycle. A Whole at one scale may become a Shape at another. Steps may repeat, combine, or recurse; they exist to show progress, not to make the work obey a counter.
+
+Stop counting structure as soon as enough is known to draw the Whole. A Step that only discusses what a later Step might make is not progress in the drawing.
+
 ## Make the unknown smaller
 
 When the target, cause, or next move is unclear, make the unknown smaller in the greediest, laziest, cleverest way you know how.
