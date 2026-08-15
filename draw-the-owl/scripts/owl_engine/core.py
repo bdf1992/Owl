@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 from dataclasses import replace
+from typing import Any
 
 from .egg import Egg, EggStatus
-from .models import CommissionBrief, TargetBinding
+from .models import CommissionBrief, Mark, TargetBinding
 from .session import ObservationBasis, SessionReceipt
 from .state import StateEnvelope, StateStore
 
@@ -60,7 +61,7 @@ class OwlEngine:
         *,
         expected_revision: str,
         current: str,
-        marks: tuple[str, ...] = (),
+        marks: tuple[Mark | dict[str, str] | str, ...] = (),
         keep: tuple[str, ...] = (),
         residuals: tuple[str, ...] = (),
         evidence: tuple[str, ...] = (),
@@ -69,17 +70,50 @@ class OwlEngine:
         state = self.store.load(target_id)
         if state is None:
             raise KeyError(target_id)
+        supplied = [Mark.coerce(mark) for mark in marks]
+        # engine-observed: making a Pass is what increments this, so the drawer
+        # cannot report itself as attended-to without the commissioner acting.
+        from_commissioner = [mark for mark in supplied if mark.source == "commissioner"]
         updated = replace(
             state,
             current=current,
-            marks=list(marks),
+            marks=[mark.to_dict() for mark in supplied],
             keep=list(keep),
             residuals=list(state.residuals) + list(residuals),
             evidence=list(evidence),
             last_pass=pass_name,
+            passes_since_commissioner_mark=(
+                0 if from_commissioner else state.passes_since_commissioner_mark + 1
+            ),
+            last_commissioner_mark=(
+                from_commissioner[-1].text if from_commissioner else state.last_commissioner_mark
+            ),
         )
         self.store.save(updated, expected_revision=expected_revision)
         return updated
+
+    def attention(self, target_id: str) -> dict[str, Any]:
+        """Answer whether this target is waiting on the commissioner.
+
+        A pull, not a push: the engine has no loop and cannot nag. Every Pass
+        consults it, so the answer arrives where it matters. The count is
+        `engine-observed` — never derived from turns, tokens, or tool volume,
+        which the engine can only take on the model's word.
+        """
+        state = self._require_state(target_id)
+        outstanding: dict[str, int] = {}
+        for raw in state.marks:
+            mark = Mark.coerce(raw)
+            outstanding[mark.source] = outstanding.get(mark.source, 0) + 1
+        pending = state.passes_since_commissioner_mark
+        return {
+            "target_id": target_id,
+            "awaiting_commissioner_mark": pending > 0,
+            "passes_since_commissioner_mark": pending,
+            "last_commissioner_mark": state.last_commissioner_mark,
+            "outstanding_marks_by_source": outstanding,
+            "basis": ObservationBasis.ENGINE_OBSERVED.value,
+        }
 
     def open_session(
         self,

@@ -115,13 +115,17 @@ target:
 commission:
   commissioner: user or named stakeholder
   directions:
-    - category: method | technique | style | tone | presentation | other
+    - category: medium | method | technique | style | tone | presentation | other
       instruction: concise realization direction
       strength: preference | mandate
       scope: pass | instance | default
 current: latest accepted result or opaque artifact reference
 keep: [protected quality]
-marks: [unresolved feedback]
+marks:
+  - text: unresolved feedback
+    source: commissioner | drawer | evidence | unattributed
+passes_since_commissioner_mark: omitted while zero
+last_commissioner_mark: text of the most recent commissioner Mark
 residuals: [visible limitation]
 evidence: [test, receipt, or opaque artifact reference]
 environments: [environment receipts]
@@ -146,6 +150,20 @@ sessions:
 ```
 
 Omit empty fields. Never store secrets, hidden reasoning, or conversation transcripts.
+
+Every Mark records who supplied it. A drawer cannot count the commissioner's attention without that fact, and prose alone kept losing it. Feedback stored before authorship was tracked loads as `unattributed`, which never clears the counter — an old file fails toward asking rather than toward proceeding.
+
+`OwlEngine.attention()` answers whether a target is waiting on its commissioner:
+
+```text
+awaiting_commissioner_mark: passes_since_commissioner_mark > 0
+passes_since_commissioner_mark: engine-observed count
+last_commissioner_mark: text
+outstanding_marks_by_source: {source: count}
+basis: engine-observed
+```
+
+Recording a Pass is what increments the count, so the drawer cannot report itself as attended-to; only a commissioner-sourced Mark clears it. Drawer and evidence Marks never do. This obeys the session-observation rule below: the count comes from explicit drawing transitions, never from turns, tokens, or tool volume. The engine has no loop and does not push a reminder — it answers when consulted, which every Pass already does.
 
 Keep `commission` outside `target`. Target records what must remain recognizable; Commission records how the commissioner wants it made or presented. Replacing a Commission does not replace the Target. `OwlEngine.set_commission()` performs that update with the same optimistic revision protection used for Passes.
 

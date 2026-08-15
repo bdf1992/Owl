@@ -46,6 +46,39 @@ class TargetBinding:
 
 
 @dataclass(frozen=True)
+class Mark:
+    """Feedback, with the one fact prose kept losing: who supplied it.
+
+    A drawer cannot count the commissioner's attention without recording whose
+    Mark is whose. `unattributed` is the honest home for feedback stored before
+    authorship was tracked — it never resets the attention counter, so an old
+    file fails toward asking rather than toward proceeding.
+    """
+
+    text: str
+    source: str
+
+    SOURCES = ("commissioner", "drawer", "evidence", "unattributed")
+
+    def __post_init__(self) -> None:
+        if self.source not in self.SOURCES:
+            raise ValueError(f"mark source must be one of {', '.join(self.SOURCES)}")
+        if not self.text.strip():
+            raise ValueError("mark text cannot be empty")
+
+    @classmethod
+    def coerce(cls, value: "Mark | dict[str, str] | str") -> "Mark":
+        if isinstance(value, cls):
+            return value
+        if isinstance(value, str):
+            return cls(text=value, source="unattributed")
+        return cls(text=value["text"], source=value.get("source", "unattributed"))
+
+    def to_dict(self) -> dict[str, str]:
+        return {"text": self.text, "source": self.source}
+
+
+@dataclass(frozen=True)
 class CommissionDirection:
     category: str
     instruction: str
@@ -53,7 +86,7 @@ class CommissionDirection:
     scope: str = "instance"
 
     def __post_init__(self) -> None:
-        categories = {"method", "technique", "style", "tone", "presentation", "other"}
+        categories = {"medium", "method", "technique", "style", "tone", "presentation", "other"}
         if self.category not in categories:
             raise ValueError("unsupported commission category")
         if self.strength not in {"preference", "mandate"}:
