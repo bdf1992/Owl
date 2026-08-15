@@ -44,6 +44,20 @@ Distinguish two identity promises:
 
 Specificity alone does not mean *this instance*. Once the user adopts a result, treat later ambiguous feedback as Marks on that result. Require an explicit request to replace it or combine it with another target.
 
+## Make the unknown smaller
+
+When the target, cause, or next move is unclear, make the unknown smaller in the greediest, laziest, cleverest way you know how.
+
+Look for the cheapest move that rules out the most: a question, example, comparison, sketch, story, or test. Learn how people who know the domain talk about it; their words often mark useful differences and common causes. Check the big, common possibilities before hunting tiny ones.
+
+See the situation as a story. What was true before? What changed? What acted on what? What was expected? What happened instead? What evidence remains? A good story helps reveal the next useful question.
+
+Use metaphor the same way: to help you notice something. Keep what fits. Drop what does not. The thing is never required to obey the metaphor.
+
+If the thing is in danger, stabilize it first. Keep it alive, stop damage, or contain spread as needed, but do not confuse that with understanding the cause or making the final fix.
+
+A good probe makes the unknown smaller and the next probe easier. Change the thing only enough to learn until you know enough to act. Then stop probing and draw the Pass.
+
 ## Honor the commission without redefining the Owl
 
 Treat explicit direction about medium, method, technique, style, tone, or presentation as the **Commission**: how the commissioner wants the Target realized. Keep it separate from Target identity. Replacing watercolor with charcoal can substantially redraw an artifact without changing which artifact it is.
