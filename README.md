@@ -72,3 +72,19 @@ The governing engine principle is:
 > Broad tool surface; narrow purpose.
 
 Every capability must help draw the current Target faithfully. Rules are retained only when they remain natural for a human, shared between participants, direct for the model, true to actual work, and faithful to the premise.
+
+<!-- lineage:begin — generated from system-cartographer lineage/lineage.yaml. Do not hand-edit. -->
+
+## Where this sits
+
+This is one of 20 repositories on this account whose relations are recorded, with the evidence for each, in [`lineage.yaml`](https://github.com/bdf1992/system-cartographer/blob/claude/access-requirements-zbl1s7/lineage/lineage.yaml). What that record says about this one:
+
+**Claim.** Turns a rough ask into a complete inspectable attempt early, then redraws it from feedback.
+
+**Checked.** `cd draw-the-owl && python -m pytest -q` — 38 passed, 12 subtests passed, observed 2026-09-04.
+
+**Relations.**
+
+- `familiar` **uses** this repository. Owl is an agent role inside familiar's casting protocol. cast/examples/find-familiar/SPELL.md:31 says "The Owl Agent may conduct the cast using owl.system as its Familiar", and bounds it: Owl cannot accept the Whole for the subject, grant authority, or waive Requirements. The relation is one-way; Owl does not mention familiar.
+
+<!-- lineage:end -->
