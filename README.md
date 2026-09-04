@@ -79,7 +79,7 @@ Every capability must help draw the current Target faithfully. Rules are retaine
 
 This is one of 20 repositories on this account whose relations are recorded, with the evidence for each, in [`lineage.yaml`](https://github.com/bdf1992/system-cartographer/blob/claude/access-requirements-zbl1s7/lineage/lineage.yaml). What that record says about this one:
 
-**Claim.** Turns a rough ask into a complete inspectable attempt early, then redraws it from feedback.
+**Claim.** Turns a rough request or exploratory mark into a complete, inspectable result, then redraws that same target from feedback without drifting into another project.
 
 **Checked.** `cd draw-the-owl && python -m pytest -q` — 38 passed, 12 subtests passed, observed 2026-09-04.
 
